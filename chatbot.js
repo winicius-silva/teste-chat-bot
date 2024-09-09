@@ -1,21 +1,29 @@
-// leitor de qr code
+// Leitor de QR code
 const qrcode = require('qrcode-terminal');
 const { Client, Buttons, List, MessageMedia } = require('whatsapp-web.js'); // Mudança Buttons
-const client = new Client();
-// serviço de leitura do qr code
-client.on('qr', qr => {
-    qrcode.generate(qr, {small: true});
+
+// Configurando o cliente com a flag '--no-sandbox' para rodar em ambientes de container
+const client = new Client({
+    puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
 });
-// apos isso ele diz que foi tudo certo
+
+// Serviço de leitura do QR code
+client.on('qr', qr => {
+    qrcode.generate(qr, { small: true });
+});
+
+// Após isso ele diz que foi tudo certo
 client.on('ready', () => {
     console.log('Tudo certo! WhatsApp conectado.');
 });
-// E inicializa tudo 
+
+// Inicializa tudo
 client.initialize();
 
 const delay = ms => new Promise(res => setTimeout(res, ms)); // Função que usamos para criar o delay entre uma ação e outra
 
-// Funil
 
 client.on('message', async msg => {
 
